@@ -5,19 +5,19 @@ import (
 	"fmt"
 )
 
-type LinkedList struct {
+type DoubleLinkedList struct {
 	head     *Node
 	inserted int
 	tail     *Node
 }
 
 type Node struct {
-	next  *Node
-	value int
 	prev  *Node
+	value int
+	next  *Node
 }
 
-func Add(list *LinkedList, valor int) {
+func Add(list *DoubleLinkedList, valor int) {
 	node := &Node{next: nil, value: valor, prev: nil}
 
 	if list.head == nil {
@@ -38,28 +38,40 @@ func Add(list *LinkedList, valor int) {
 	list.inserted++
 }
 
-func AddOnIndex(list *LinkedList, index int, valor int) error {
+func AddOnIndex(list *DoubleLinkedList, index int, valor int) error {
 	if index < 0 || index > list.inserted {
 		return errors.New("index out of lower or upper bound, try again")
 	} else {
 		i := 0
 		node_novo := &Node{next: nil, value: valor, prev: nil} // no que vai ser adicionado
 
-		node_atual := list.head
-		var node_anterior *Node
+		switch index {
+		case 0:
+			if list.inserted == 0 {
+				list.head = node_novo
+				list.tail = node_novo
+			} else {
+				node_novo.next = list.head
+				list.head.prev = node_novo
+				list.head = node_novo
+			}
 
-		for i != index {
-			node_anterior = node_atual
-			node_atual = node_atual.next
-			i++
-		}
+		case list.inserted:
+			node_novo.prev = list.tail
+			list.tail.next = node_novo
+			list.tail = node_novo
 
-		if i == 0 {
-			list.head = node_novo
-			node_novo.next = node_atual
-		} else {
-			node_novo.next = node_atual
-			node_anterior.next = node_novo
+		default:
+			node_atual := list.head
+
+			for i != index {
+				node_atual = node_atual.next
+				i++
+			}
+
+			node_novo.next = node_atual.next
+			node_atual.next = node_novo
+			node_novo.prev = node_atual
 		}
 
 		list.inserted++
@@ -68,34 +80,46 @@ func AddOnIndex(list *LinkedList, index int, valor int) error {
 	return nil
 }
 
-func RemoveOnIndex(list *LinkedList, index int) error {
+func RemoveOnIndex(list *DoubleLinkedList, index int) error {
 	if index < 0 || index >= list.inserted {
 		return errors.New("index out of lower or upper bound, try again")
 	} else {
-		i := 0
-		node_atual := list.head
-		var node_anterior *Node = nil
+		switch index {
+		case 0:
+			if list.inserted == 1 {
+				list.head = nil
+				list.tail = nil
+			} else {
+				next := list.head.next
+				next.prev = nil
+				list.head = next
+			}
+		case list.inserted - 1:
+			prev := list.tail.prev
+			prev.next = nil
+			list.tail = prev
 
-		for i != index {
-			node_anterior = node_atual
-			node_atual = node_atual.next
-			i++
+		default:
+			node_atual := list.head
+			i := 0
+
+			for i != index {
+				node_atual = node_atual.next
+				i++
+			}
+
+			node_atual.prev = node_atual.next
+
 		}
-
-		if i == 0 {
-			list.head = list.head.next
-		} else {
-			node_anterior.next = node_atual.next
-		}
-
-		list.inserted--
 	}
+
+	list.inserted--
 
 	return nil
 
 }
 
-func Get(list *LinkedList, index int) (int, error) {
+func Get(list *DoubleLinkedList, index int) (int, error) {
 	node_atual := list.head
 	i := 0
 
@@ -111,7 +135,7 @@ func Get(list *LinkedList, index int) (int, error) {
 	return node_atual.value, nil
 }
 
-func Set(list *LinkedList, index int, valor int) error {
+func Set(list *DoubleLinkedList, index int, valor int) error {
 	if index < 0 || index >= list.inserted {
 		return errors.New("index out of lower or upper bound, check again")
 	}
@@ -137,7 +161,7 @@ func Set(list *LinkedList, index int, valor int) error {
 	return nil
 }
 
-func PrintList(list *LinkedList) {
+func PrintList(list *DoubleLinkedList) {
 	fmt.Println("---------------------------------------------")
 	i := 0
 
@@ -162,12 +186,12 @@ func PrintList(list *LinkedList) {
 }
 
 func main() {
-	x := LinkedList{head: nil, inserted: 0}
+	x := DoubleLinkedList{head: nil, inserted: 0}
 	Add(&x, 10)
 	Add(&x, 15)
 	PrintList(&x)
 
-	AddOnIndex(&x, 1, 20)
+	AddOnIndex(&x, 2, 20)
 	Add(&x, 25)
 
 	PrintList(&x)
@@ -180,7 +204,9 @@ func main() {
 		fmt.Println(resultado_set)
 	}
 
-	resultado_remove := RemoveOnIndex(&x, 1)
+	resultado_remove := RemoveOnIndex(&x, 3)
+	resultado_remove = RemoveOnIndex(&x, 2)
+	resultado_remove = RemoveOnIndex(&x, 1)
 
 	if resultado_remove != nil {
 		fmt.Println(resultado_remove)
