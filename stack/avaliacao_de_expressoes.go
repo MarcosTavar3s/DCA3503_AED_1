@@ -2,17 +2,11 @@ package main
 
 import (
 	"fmt"
-	"os"
 )
 
-func main() {
+func balparenteses(expressao string) bool {
 	var avaliador Stack
-	var expressao string
-
-	fmt.Println("Digite a expressao que sera avaliada: ")
-	fmt.Scanln(&expressao)
-
-	state := true
+	var state bool
 
 	for _, r := range expressao {
 		if r == '(' {
@@ -23,16 +17,30 @@ func main() {
 			if state == false {
 				avaliador.Pop()
 			} else {
-				fmt.Println("A expressao nao esta adequada")
-				os.Exit(0)
+				return false
 			}
 
 		}
 	}
 
 	state = avaliador.IsEmpty()
-
 	if state == false {
+		return false
+	}
+
+	return true
+
+}
+
+func main() {
+	var expressao string
+
+	fmt.Println("Digite a expressao que sera avaliada: ")
+	fmt.Scanln(&expressao)
+
+	result := balparenteses(expressao)
+
+	if result == false {
 		fmt.Println("A expressao nao esta adequada")
 	} else {
 		fmt.Println("A expressao esta adequada")
