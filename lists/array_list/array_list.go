@@ -98,12 +98,19 @@ func (list *ArrayList) Size() int {
 	return list.size
 }
 
+func (list *ArrayList) Reverse() {
+	for i := 0; i < list.size/2; i++ {
+		list.vetor[i], list.vetor[list.size-i] = list.vetor[list.size-i], list.vetor[i]
+	}
+
+}
+
 func main() {
 	lista := &ArrayList{}
 
 	lista.Init(10)
 
-	for i := 0; i < 11; i++ {
+	for i := 0; i < 12; i++ {
 		lista.Add(i)
 	}
 
@@ -118,6 +125,9 @@ func main() {
 	fmt.Println(lista.Get(4))
 
 	fmt.Println(lista.Set(60, 4))
+	fmt.Println(lista.vetor)
+
+	lista.Reverse()
 	fmt.Println(lista.vetor)
 
 }
