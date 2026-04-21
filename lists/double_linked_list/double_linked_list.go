@@ -108,7 +108,8 @@ func RemoveOnIndex(list *DoubleLinkedList, index int) error {
 				i++
 			}
 
-			node_atual.prev = node_atual.next
+			node_atual.prev.next = node_atual.next
+			node_atual.next.prev = node_atual.prev
 
 		}
 	}
@@ -185,10 +186,38 @@ func PrintList(list *DoubleLinkedList) {
 	fmt.Println("---------------------------------------------")
 }
 
+func Reverse(list *DoubleLinkedList) {
+	if list.inserted == 0 {
+		fmt.Println("Lista vazia")
+	} else {
+		if list.inserted == 1 {
+			fmt.Println("Lista so tem 1 elemento")
+		} else {
+			aux := list.head
+
+			for i := 0; i < list.inserted; i++ {
+
+				aux.prev, aux.next = aux.next, aux.prev
+				fmt.Println(aux)
+				aux = aux.prev
+
+			}
+
+			list.tail, list.head = list.head, list.tail
+
+		}
+
+	}
+
+}
+
 func main() {
 	x := DoubleLinkedList{head: nil, inserted: 0}
 	Add(&x, 10)
 	Add(&x, 15)
+	Add(&x, 20)
+	Add(&x, 25)
+
 	PrintList(&x)
 
 	AddOnIndex(&x, 2, 20)
@@ -211,7 +240,17 @@ func main() {
 	if resultado_remove != nil {
 		fmt.Println(resultado_remove)
 	}
+	fmt.Println(x.inserted)
 
+	aux := x.head
+	for i := 0; i < x.inserted; i++ {
+		fmt.Println(aux)
+		aux = aux.next
+
+	}
+	fmt.Println("-----------------")
+
+	Reverse(&x)
 	PrintList(&x)
 
 }
