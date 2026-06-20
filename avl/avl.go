@@ -51,6 +51,32 @@ func (avl *AVL) UpdateProperties() {
 	}
 }
 
+func (avl *AVL) RebalanceLeftLeft() *AVL {
+	return avl.RotRight()
+}
+
+func (avl *AVL) RebalanceLeftNeutral() *AVL {
+	return avl.RotRight()
+}
+
+func (avl *AVL) RebalanceLeftRight() *AVL {
+	avl.left = avl.left.RotLeft()
+	return avl.RotRight()
+}
+
+func (avl *AVL) RebalanceRightRightl() *AVL {
+	return avl.RotLeft()
+}
+
+func (avl *AVL) RebalanceRightNeutral() *AVL {
+	return avl.RotLeft()
+}
+
+func (avl *AVL) RebalanceRightLeft() *AVL {
+	avl.right = avl.right.RotRight()
+	return avl.RotLeft()
+}
+
 func main() {
 	println("hello")
 }
