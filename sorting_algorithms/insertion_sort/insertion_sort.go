@@ -7,8 +7,8 @@ import (
 
 func insertionSort(v []int) {
 
-	for i := 0; i < len(v); i++ {
-		for j := i; j > 0 && v[j-1] > v[j]; j-- {
+	for i := 0; i < len(v)-1; i++ {
+		for j := i + 1; j > 0 && v[j-1] > v[j]; j-- {
 			v[j], v[j-1] = v[j-1], v[j]
 		}
 

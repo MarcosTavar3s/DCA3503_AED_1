@@ -1,5 +1,7 @@
 package main
 
+import "math"
+
 type Bst struct {
 	val      int
 	direita  *Bst
@@ -209,9 +211,27 @@ func (bst *Bst) Remove(val int) *Bst {
 
 }
 
-// func (bst *Bst) isBst() bool {
-// usar percurso em ordem -> mais complexo mas resolve
-// }
+func (bstNode *Bst) IsBst() bool {
+	// Iniciamos com os limites teóricos de mínimo e máximo
+	return validate(bstNode, math.MinInt, math.MaxInt)
+}
+
+// Função auxiliar recursiva que checa os limites de cada nó
+func validate(node *Bst, min, max int) bool {
+	// Uma árvore vazia (ou folha alcançada) é uma BST válida
+	if node == nil {
+		return true
+	}
+
+	// O valor do nó atual deve estar estritamente dentro do intervalo permitido
+	if node.val <= min || node.val >= max {
+		return false
+	}
+
+	// Para a subárvore esquerda: o valor máximo passa a ser o valor do nó atual
+	// Para a subárvore direita: o valor mínimo passa a ser o valor do nó atual
+	return validate(node.esquerda, min, node.val) && validate(node.direita, node.esquerda.val, max)
+}
 
 func main() {
 	// cria a primeira raiz
