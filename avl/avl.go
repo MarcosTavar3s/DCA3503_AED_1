@@ -13,6 +13,8 @@ func (avl *AVL) RotRight() *AVL {
 	avl.left = node.right
 	node.right = avl
 
+	avl.UpdateProperties()
+	node.UpdateProperties()
 	return node
 
 }
