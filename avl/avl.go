@@ -32,6 +32,7 @@ func (avl *AVL) UpdateProperties() {
 	if avl.left == nil && avl.right == nil {
 		avl.bf = 0
 		avl.height = 0
+		return
 	}
 
 	hleft := 0
@@ -64,7 +65,7 @@ func (avl *AVL) RebalanceLeftRight() *AVL {
 	return avl.RotRight()
 }
 
-func (avl *AVL) RebalanceRightRightl() *AVL {
+func (avl *AVL) RebalanceRightRight() *AVL {
 	return avl.RotLeft()
 }
 
@@ -75,6 +76,30 @@ func (avl *AVL) RebalanceRightNeutral() *AVL {
 func (avl *AVL) RebalanceRightLeft() *AVL {
 	avl.right = avl.right.RotRight()
 	return avl.RotLeft()
+}
+
+func (avl *AVL) Rebalance() *AVL {
+	if avl.bf == -2 {
+		if avl.left.bf == -1 {
+			avl = avl.RebalanceLeftLeft()
+		} else if avl.left.bf == 1 {
+			avl = avl.RebalanceLeftRight()
+		} else {
+			avl = avl.RebalanceLeftNeutral()
+		}
+
+	}
+	if avl.bf == 2 {
+		if avl.bf == 1 {
+			avl = avl.RebalanceRightRight()
+		} else if avl.bf == -1 {
+			avl.RebalanceRightLeft()
+		} else {
+			avl.RebalanceLeftNeutral()
+		}
+
+	}
+	return avl
 }
 
 func main() {
