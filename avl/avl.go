@@ -50,6 +50,8 @@ func (avl *AVL) UpdateProperties() {
 	} else {
 		avl.height = hright + 1
 	}
+
+	avl.bf = hright - hleft
 }
 
 func (avl *AVL) RebalanceLeftLeft() *AVL {
@@ -90,18 +92,124 @@ func (avl *AVL) Rebalance() *AVL {
 
 	}
 	if avl.bf == 2 {
-		if avl.bf == 1 {
+		if avl.right.bf == 1 {
 			avl = avl.RebalanceRightRight()
-		} else if avl.bf == -1 {
-			avl.RebalanceRightLeft()
+		} else if avl.right.bf == -1 {
+			avl = avl.RebalanceRightLeft()
 		} else {
-			avl.RebalanceLeftNeutral()
+			avl = avl.RebalanceRightNeutral()
 		}
 
 	}
 	return avl
 }
 
+func (avl *AVL) Min() int {
+	if avl.left == nil {
+		return avl.val
+	}
+
+	return avl.left.Min()
+}
+
+func (avl *AVL) Max() int {
+	if avl.right == nil {
+		return avl.val
+	}
+
+	return avl.right.Max()
+}
+
+func (avl *AVL) Add(val int) *AVL {
+	if avl == nil {
+		return &AVL{val: val}
+	}
+
+	if val <= avl.val {
+		avl.left = avl.left.Add(val)
+	} else {
+		avl.right = avl.right.Add(val)
+	}
+
+	avl.UpdateProperties()
+	return avl.Rebalance()
+}
+
+func (avl *AVL) Remove(val int) *AVL {
+
+	if avl.val == val {
+		if avl.left == nil && avl.right == nil { // no folha
+			return nil
+		}
+		if avl.left == nil && avl.right != nil {
+			return avl.right
+		}
+		if avl.left != nil && avl.right == nil {
+			return avl.left
+		}
+		if avl.left != nil && avl.right != nil {
+			min := avl.right.Min()
+			avl.val = min
+			avl = avl.Remove(min)
+
+		}
+	} else {
+		if avl.val < val {
+			avl = avl.left.Remove(val)
+		} else {
+			avl = avl.right.Remove(val)
+		}
+	}
+
+	avl.UpdateProperties()
+	return avl.Rebalance()
+}
+
+func (avl *AVL) LevelOrder() {
+	queue := make([]*AVL, 0)
+	queue = append(queue, avl)
+
+	for len(queue) != 0 {
+		curNode := queue[0]
+
+		print(curNode.val)
+		print(" ")
+
+		if curNode.left != nil {
+			queue = append(queue, curNode.left)
+		}
+		if curNode.right != nil {
+			queue = append(queue, curNode.right)
+		}
+
+		queue = queue[1:]
+	}
+}
+
 func main() {
-	println("hello")
+	avl := &AVL{val: 1}
+	avl = avl.Add(2)
+	print("Level: ")
+	avl.LevelOrder()
+	avl = avl.Add(3)
+	print("\nLevel: ")
+	avl.LevelOrder()
+	avl = avl.Add(4)
+	print("\nLevel: ")
+	avl.LevelOrder()
+	avl = avl.Add(5)
+	print("\nLevel: ")
+	avl.LevelOrder()
+	avl = avl.Add(6)
+	print("\nLevel: ")
+	avl.LevelOrder()
+	avl = avl.Add(7)
+	print("\nLevel: ")
+	avl.LevelOrder()
+	avl = avl.Add(8)
+	print("\nLevel: ")
+	avl.LevelOrder()
+	avl = avl.Add(9)
+	print("\nLevel: ")
+	avl.LevelOrder()
 }
